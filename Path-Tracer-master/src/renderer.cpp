@@ -1,9 +1,14 @@
 #include <vector>
 #include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include <iostream>
 
 #include "renderer.h"
 #include "../lib/lodepng/lodepng.h"
+
+#define N 4096
+#define N_THREADS 8
 
 // Clamp double to min/max of 0/1
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -16,18 +21,22 @@ Renderer::Renderer(Scene *scene, Camera *camera) {
     m_pixel_buffer = new Vec[m_camera->get_width()*m_camera->get_height()];
 }
 
-void Renderer::render(int samples) {
+void *Renderer::render(int samples, void *tid) {
     int width = m_camera->get_width();
     int height = m_camera->get_height();
     double samples_recp = 1./samples;
+    int t = (int) tid;
+    int blocksize = height/N_THREADS;
 
     // Main Loop
-    for (int y=0; y<height; y++){
+    for (int y = (t)*blocksize; y < (t+1)*blocksize; y++){
         unsigned short Xi[3]={0,0,y*y*y};               // Stores seed for erand48
 
         fprintf(stderr, "\rRendering (%i samples): %.2f%% ",      // Prints
                 samples, (double)y/height*100);                   // progress
 
+        // MEXER NESSA LINHA AQUI
+        
         for (int x=0; x<width; x++){
             Vec col = Vec();
 
@@ -38,7 +47,9 @@ void Renderer::render(int samples) {
 
             m_pixel_buffer[(y)*width + x] = col * samples_recp;
         }
+        // **********************
     }
+    pthread_exit(NULL);
 }
 
 void Renderer::save_image(const char *file_path) {

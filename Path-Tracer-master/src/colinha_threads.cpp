@@ -18,6 +18,8 @@ void *multiply(void *tid)
 	int t = (int) tid;
         //i = (int) tid;	
 	int blocksize = N/N_THREADS;
+
+  // AS THREADS ESTAO AQUI MAN
 	for (i = (t)*blocksize; i < (t+1)*blocksize; i++) 
 	{ 
 		for (j = 0; j < N; j++) 
@@ -25,7 +27,8 @@ void *multiply(void *tid)
 			for (k = 0; k < N; k++) 
 				res[i][j] += mat1[i][k] * mat2[k][j]; 
 		} 
-	} 
+	}
+  // *************************
 	pthread_exit(NULL);
 } 
 

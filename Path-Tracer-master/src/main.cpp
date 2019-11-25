@@ -13,8 +13,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "time.h"
-
 #include "vector.h"
 #include "material.h"
 #include "objects.h"
@@ -22,12 +22,16 @@
 #include "scene.h"
 #include "renderer.h"
 
+#define N_THREADS 8
 
 int main(int argc, char *argv[]) {
 
     time_t start, stop;
     time(&start);               // Start execution timer
     int samples = 512;            // Default samples per pixel
+    pthread_t threads[N_THREADS];
+    int status;
+    int j, i;
 
     //if (argc == 2) samples = atoi(argv[1]);
 
@@ -44,7 +48,25 @@ int main(int argc, char *argv[]) {
 
 
     Renderer renderer = Renderer(&scene, &camera);  // Create renderer with our scene and camera
-    renderer.render(samples);                       // Render image to pixel buffer
+
+    for(i = 0 ; i < N_THREADS ; i ++) 
+    {
+      status = pthread_create(&threads[i], NULL, renderer.render(samples), (void*)i);
+      if(status != 0)
+      {
+        printf("Cannot create thread\n");
+        exit(1);
+      }
+    }
+
+    for(i = 0 ; i < N_THREADS ; i ++) 
+    {
+      pthread_join(threads[i],NULL);
+    }
+
+
+
+    //renderer.render(samples);                       // Render image to pixel buffer
     renderer.save_image("render.png");              // Save image
 
     // Print duration information
