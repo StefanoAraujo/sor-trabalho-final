@@ -1,0 +1,3 @@
+/home/daniel/programacao/sor-trabalho-final/Path-Tracer-master/build/CMakeFiles/rebuild_cache.dir
+/home/daniel/programacao/sor-trabalho-final/Path-Tracer-master/build/CMakeFiles/pathtracer.dir
+/home/daniel/programacao/sor-trabalho-final/Path-Tracer-master/build/CMakeFiles/edit_cache.dir

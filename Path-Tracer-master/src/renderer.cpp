@@ -9,6 +9,7 @@
 
 #define N 4096
 #define N_THREADS 8
+#define samples 512
 
 // Clamp double to min/max of 0/1
 inline double clamp(double x){ return x<0 ? 0 : x>1 ? 1 : x; }
@@ -21,7 +22,7 @@ Renderer::Renderer(Scene *scene, Camera *camera) {
     m_pixel_buffer = new Vec[m_camera->get_width()*m_camera->get_height()];
 }
 
-void *Renderer::render(int samples, void *tid) {
+void *Renderer::render(void *tid) {
     int width = m_camera->get_width();
     int height = m_camera->get_height();
     double samples_recp = 1./samples;

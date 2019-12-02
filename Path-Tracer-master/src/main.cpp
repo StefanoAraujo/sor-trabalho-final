@@ -24,6 +24,7 @@
 
 #define N_THREADS 8
 
+
 int main(int argc, char *argv[]) {
 
     time_t start, stop;
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
     int samples = 512;            // Default samples per pixel
     pthread_t threads[N_THREADS];
     int status;
-    int j, i;
+    int j;
 
     //if (argc == 2) samples = atoi(argv[1]);
 
@@ -49,9 +50,9 @@ int main(int argc, char *argv[]) {
 
     Renderer renderer = Renderer(&scene, &camera);  // Create renderer with our scene and camera
 
-    for(i = 0 ; i < N_THREADS ; i ++) 
+    for(int i = 0 ; i < N_THREADS ; i ++) 
     {
-      status = pthread_create(&threads[i], NULL, renderer.render(samples), (void*)i);
+      status = pthread_create(&threads[i], NULL, renderer.render, (void*)i);
       if(status != 0)
       {
         printf("Cannot create thread\n");
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    for(i = 0 ; i < N_THREADS ; i ++) 
+    for(int i = 0 ; i < N_THREADS ; i ++) 
     {
       pthread_join(threads[i],NULL);
     }
