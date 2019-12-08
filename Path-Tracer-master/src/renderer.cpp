@@ -26,7 +26,7 @@ void *Renderer::render(void *tid) {
     int width = m_camera->get_width();
     int height = m_camera->get_height();
     double samples_recp = 1./samples;
-    int t = (int) tid;
+    int t = *(int*) tid;
     int blocksize = height/N_THREADS;
 
     // Main Loop
